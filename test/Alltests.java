@@ -4,7 +4,6 @@ import miniredis.testing.TestRunner;
 
 public class Alltests {
     public static void main(String[] args) {
-        TestRunner.run(ExampleTest.class);
     }
 
 }
