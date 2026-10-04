@@ -72,4 +72,15 @@ public class InMemoryStoreExpiryTest {
 
         Assert.assertEquals(2, store.size());
     }
+
+    @Test
+    void removeExpiredReturnsNumberRemoved() {
+        store.put("key1", "v1", 100);
+        store.put("key2", "v2", 200);
+        store.put("key3", "v3", 300);
+        clock.advance(200);
+
+        Assert.assertEquals(2, store.removeExpired());
+        Assert.assertEquals(1, store.size());
+    }
 }

@@ -27,4 +27,6 @@ public interface Store<K, V> {
     boolean expire(K key, long ttlMillis);
 
     long ttl(K key); // Time to Live: time left before the key expires
+
+    int removeExpired(); // returns number of removed values
 }

@@ -16,7 +16,7 @@ public class InMemoryStore<K, V> implements Store<K, V> {
         this.clock = Objects.requireNonNull(clock, "clock must not be null");
     }
 
-    private Optional<Entry<V>> liveEntry(K key) {
+    private synchronized Optional<Entry<V>> liveEntry(K key) {
         Entry<V> entry = data.get(key);
 
         if (entry == null) {
@@ -30,14 +30,14 @@ public class InMemoryStore<K, V> implements Store<K, V> {
     }
 
     @Override
-    public void put(K key, V value) {
+    public synchronized void put(K key, V value) {
         Objects.requireNonNull(key, "Key must not be null");
         Objects.requireNonNull(value, "Value must not be null");
         data.put(key, Entry.permanent(value));
     }
 
     @Override
-    public void put(K key, V value, long ttlMillis) {
+    public synchronized void put(K key, V value, long ttlMillis) {
         Objects.requireNonNull(key, "Key must not be null");
         Objects.requireNonNull(value, "Value must not be null");
         /*
@@ -48,12 +48,12 @@ public class InMemoryStore<K, V> implements Store<K, V> {
     }
 
     @Override
-    public Optional<V> get(K key) {
+    public synchronized Optional<V> get(K key) {
         return liveEntry(key).map(Entry::value);
     }
 
     @Override
-    public boolean delete(K key) {
+    public synchronized boolean delete(K key) {
         /* If a key is already expired, then removing it shouldn't return true */
         boolean existed = liveEntry(key).isPresent();
         data.remove(key);
@@ -61,19 +61,18 @@ public class InMemoryStore<K, V> implements Store<K, V> {
     }
 
     @Override
-    public boolean exists(K key) {
+    public synchronized boolean exists(K key) {
         return liveEntry(key).isPresent();
     }
 
     @Override
-    public int size() {
-        long now = clock.now();
-        data.values().removeIf(entry -> entry.isExpired(now));
+    public synchronized int size() {
+        removeExpired();
         return data.size();
     }
 
     @Override
-    public boolean expire(K key, long ttlMillis) {
+    public synchronized boolean expire(K key, long ttlMillis) {
         Optional<Entry<V>> entryOptional = liveEntry(key);
         if (entryOptional.isPresent()) {
             this.put(key, entryOptional.get().value(), ttlMillis);
@@ -83,7 +82,7 @@ public class InMemoryStore<K, V> implements Store<K, V> {
     }
 
     @Override
-    public long ttl(K key) {
+    public synchronized long ttl(K key) {
         Entry<V> entry = liveEntry(key).orElse(null);
         if (entry == null) {
             return NO_KEY;
@@ -96,4 +95,11 @@ public class InMemoryStore<K, V> implements Store<K, V> {
         return entry.expiresAt() == Entry.NO_EXPIRY ? NO_EXPIRY : entry.expiresAt() - clock.now();
     }
 
+    @Override
+    public synchronized int removeExpired() {
+        long now = clock.now();
+        int before = data.size();
+        data.values().removeIf(entry -> entry.isExpired(now));
+        return before - data.size();
+    }
 }
