@@ -1,5 +1,7 @@
 package miniredis.store;
 
+import miniredis.store.Clock;
+
 class FakeClock implements Clock {
     private long time = 0;
 

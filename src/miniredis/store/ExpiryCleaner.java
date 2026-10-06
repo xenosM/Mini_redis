@@ -6,7 +6,7 @@ public class ExpiryCleaner implements AutoCloseable {
 
     private final Store<?, ?> store; // the store to clean on
     private final long intervalMillis; // the interval between two cleans
-    private volatile boolean running = false;// we use volatile here becuase without it different threads read from
+    private volatile boolean running = false;// we use volatile here because without it different threads read from
                                              // different cache
     private Thread cleaner;
 

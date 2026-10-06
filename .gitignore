@@ -1,3 +1,6 @@
 .vscode
 bin
 projectScript.sh
+.idea
+Mini_redis.iml
+out

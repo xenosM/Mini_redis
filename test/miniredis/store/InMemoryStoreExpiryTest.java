@@ -1,5 +1,7 @@
 package miniredis.store;
 
+import miniredis.store.InMemoryStore;
+import miniredis.store.Store;
 import miniredis.testing.Test;
 import miniredis.testing.Assert;
 
