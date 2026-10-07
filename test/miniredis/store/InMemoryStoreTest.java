@@ -65,4 +65,23 @@ public class InMemoryStoreTest {
         store.put("key3", "value");
         Assert.assertEquals(3, store.size());
     }
+
+    @Test
+    void storeWorksWithLfuPolicy(){
+        Store<String,String> lfuStore = new InMemoryStore<>(new FakeClock(),3,new LfuPolicy<>());
+        lfuStore.put("key1", "value");
+        lfuStore.put("key1", "value");
+        lfuStore.put("key2", "value");
+        lfuStore.put("key3", "value");
+        lfuStore.get("key2");
+        lfuStore.get("key2");
+        lfuStore.put("key4", "value");
+
+        // 1 => {key3}, 2=>{key1,key2}. adding key4 replaces key3
+        Assert.assertFalse(lfuStore.exists("key3"));
+        Assert.assertTrue(lfuStore.exists("key1"));
+        Assert.assertTrue(lfuStore.exists("key2"));
+        Assert.assertTrue(lfuStore.exists("key4"));
+        Assert.assertEquals(3,lfuStore.size());
+    }
 }
