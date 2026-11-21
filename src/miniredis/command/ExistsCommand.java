@@ -2,7 +2,7 @@ package miniredis.command;
 
 import miniredis.store.Store;
 
-public record ExistCommand(String key) implements Command {
+public record ExistsCommand(String key) implements Command {
     @Override
     public String execute(Store<String, String> store) {
         return store.exists(key) ? ReplyHelper.integer(1) : ReplyHelper.integer(0);
