@@ -1,10 +1,7 @@
 package miniredis;
 
-import miniredis.store.InMemoryStoreEvictionTest;
-import miniredis.store.LruPolicyTest;
+import miniredis.store.*;
 import miniredis.testing.TestRunner;
-import miniredis.store.InMemoryStoreExpiryTest;
-import miniredis.store.InMemoryStoreTest;
 
 public class AllTests {
     public static void main(String[] args) {
@@ -12,6 +9,7 @@ public class AllTests {
         TestRunner.run(InMemoryStoreExpiryTest.class);
         TestRunner.run(LruPolicyTest.class);
         TestRunner.run(InMemoryStoreEvictionTest.class);
+        TestRunner.run(CommandParserTest.class);
     }
 
 }

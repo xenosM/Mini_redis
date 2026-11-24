@@ -2,9 +2,7 @@ package miniredis.command;
 
 import miniredis.store.Store;
 
-public class GetCommand implements Command {
-    private final String key ;
-
+public record GetCommand(String key) implements Command {
     public GetCommand(String key){
         this.key = key;
     }
