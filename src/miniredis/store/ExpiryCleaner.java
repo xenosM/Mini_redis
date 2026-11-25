@@ -39,7 +39,7 @@ public class ExpiryCleaner implements AutoCloseable {
     private void clean() {
         int removed = store.removeExpired();
         if (removed > 0) {
-            System.out.println("The cleaner removed: " + removed + " expired keys.");
+//            System.out.println("The cleaner removed: " + removed + " expired keys.");
         }
     }
 

@@ -142,8 +142,8 @@ public class InMemoryStore<K, V> implements Store<K, V> {
     private void makeRoom() {
         removeExpired();
         //runs if there were no expired keys to remove
-        while (data.size() >= maxSize) {
             Optional<K> victim = policy.selectVictim();
+        while (data.size() >= maxSize) {
             // when the store is full and there is no policy set, the user cannot put new entry
             if (victim.isEmpty()) {
                 throw new IllegalStateException("The store is full");
